@@ -42,3 +42,21 @@ body {
 #balance {
     font-size: 24px;
 }
+
+#message {
+    margin-top: 20px;
+    font-size: 24px;
+    height: 30px;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.win-animation {
+    animation: flash 1s infinite;
+}
+
+@keyframes flash {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}
