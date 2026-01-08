@@ -18,8 +18,13 @@ const reel2 = document.getElementById('reel2');
 const reel3 = document.getElementById('reel3');
 const balanceAmount = document.getElementById('balance-amount');
 const spinButton = document.getElementById('spin-button');
+const messageDisplay = document.getElementById('message');
 
 function spin() {
+    // Clear previous message
+    messageDisplay.textContent = '';
+    messageDisplay.classList.remove('win-animation');
+
     // Generate random symbols for each reel
     const result1 = symbols[Math.floor(Math.random() * symbols.length)];
     const result2 = symbols[Math.floor(Math.random() * symbols.length)];
@@ -39,7 +44,9 @@ function checkWin(result) {
     if (payouts[resultString]) {
         playerMoney += payouts[resultString];
         updateBalance();
-        // Optional: Add visual feedback for winning
+        // Add visual feedback for winning
+        messageDisplay.textContent = `Win! Payout: ${payouts[resultString]}`;
+        messageDisplay.classList.add('win-animation');
         console.log(`Win! Payout: ${payouts[resultString]}`);
     }
 }
