@@ -28,6 +28,36 @@ body {
     margin: 0 5px;
     font-size: 50px;
     line-height: 100px;
+    overflow: hidden;
+    position: relative;
+    background-color: white;
+    color: black;
+}
+
+.reel > .icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    transition: top 2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.reel > .icons > div {
+    height: 100px;
+    line-height: 100px;
+}
+
+.reel.win {
+    animation: win-pulse 1s infinite;
+    border-color: gold;
+    box-shadow: 0 0 10px gold;
+}
+
+@keyframes win-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 #controls button {

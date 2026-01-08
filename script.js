@@ -19,19 +19,76 @@ const reel3 = document.getElementById('reel3');
 const balanceAmount = document.getElementById('balance-amount');
 const spinButton = document.getElementById('spin-button');
 
+// Initialize reels
+function init() {
+    [reel1, reel2, reel3].forEach(reel => {
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'icons';
+        // Start with a random symbol wrapped in a div
+        iconContainer.innerHTML = `<div>${symbols[Math.floor(Math.random() * symbols.length)]}</div>`;
+        reel.innerHTML = '';
+        reel.appendChild(iconContainer);
+    });
+}
+init();
+
 function spin() {
-    // Generate random symbols for each reel
-    const result1 = symbols[Math.floor(Math.random() * symbols.length)];
-    const result2 = symbols[Math.floor(Math.random() * symbols.length)];
-    const result3 = symbols[Math.floor(Math.random() * symbols.length)];
+    if (spinButton.disabled) return;
+    spinButton.disabled = true;
 
-    // Update the UI to show the new symbols
-    reel1.textContent = result1;
-    reel2.textContent = result2;
-    reel3.textContent = result3;
+    // Clear previous win effects
+    [reel1, reel2, reel3].forEach(el => el.classList.remove('win'));
 
-    // Check for wins
-    checkWin([result1, result2, result3]);
+    const reels = [reel1, reel2, reel3];
+    const results = [];
+    let completedReels = 0;
+
+    reels.forEach((reel, index) => {
+        const resultSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+        results.push(resultSymbol);
+
+        const delay = index * 500;
+        const numIcons = 20; // Number of symbols to scroll through
+        const iconHeight = 100;
+
+        const iconContainer = reel.querySelector('.icons');
+        const currentSymbol = iconContainer.querySelector('div').innerText.trim();
+
+        let stripContent = `<div>${currentSymbol}</div>`;
+        for (let i = 0; i < numIcons; i++) {
+            if (i === numIcons - 1) {
+                 stripContent += `<div>${resultSymbol}</div>`;
+            } else {
+                 stripContent += `<div>${symbols[Math.floor(Math.random() * symbols.length)]}</div>`;
+            }
+        }
+
+        iconContainer.innerHTML = stripContent;
+        iconContainer.style.transition = 'none';
+        iconContainer.style.top = '0px';
+
+        // Force reflow
+        void iconContainer.offsetWidth;
+
+        setTimeout(() => {
+            iconContainer.style.transition = 'top 2s cubic-bezier(0.25, 1, 0.5, 1)';
+            const targetTop = -(numIcons * iconHeight);
+            iconContainer.style.top = `${targetTop}px`;
+        }, delay + 50);
+
+        // Cleanup after animation
+        setTimeout(() => {
+            iconContainer.style.transition = 'none';
+            iconContainer.innerHTML = `<div>${resultSymbol}</div>`;
+            iconContainer.style.top = '0px';
+
+            completedReels++;
+            if (completedReels === 3) {
+                spinButton.disabled = false;
+                checkWin(results);
+            }
+        }, delay + 2000 + 100);
+    });
 }
 
 function checkWin(result) {
@@ -39,7 +96,8 @@ function checkWin(result) {
     if (payouts[resultString]) {
         playerMoney += payouts[resultString];
         updateBalance();
-        // Optional: Add visual feedback for winning
+        // Add visual feedback for winning
+        [reel1, reel2, reel3].forEach(el => el.classList.add('win'));
         console.log(`Win! Payout: ${payouts[resultString]}`);
     }
 }
